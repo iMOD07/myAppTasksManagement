@@ -66,4 +66,14 @@ public class TaskController {
         Task completedTask = taskService.completeTask(taskId);
         return ResponseEntity.ok(completedTask);
     }
+
+    // إنهاء مهمة – متاح فقط للعميل (ADMIN)
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/complete/{taskId}")
+    public ResponseEntity<Task> completeTaskByAdmin(@PathVariable Long taskId) {
+        Task completedTask = taskService.completeTask(taskId);
+        return ResponseEntity.ok(completedTask);
+    }
+
+
 }

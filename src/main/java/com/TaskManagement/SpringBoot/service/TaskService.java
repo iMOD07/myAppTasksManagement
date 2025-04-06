@@ -93,5 +93,16 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    // إنهاء مهمة (تحديث الحالة إلى "Completed") – يُستخدم من قبل الادمن
+    public Task completeTaskByAdmin(Long taskID) {
+        Optional<Task> taskOptional = taskRepository.findById(taskID);
+        if (taskOptional.isEmpty()) {
+            throw new RuntimeException("Task not found");
+        }
+        Task task = taskOptional.get();
+        task.setStatus("Complete");
+        return taskRepository.save(task);
+    }
+
 
 }

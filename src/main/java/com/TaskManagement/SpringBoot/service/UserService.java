@@ -11,7 +11,6 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
     public User registerUser(String fullName, String email, String passwordHash, com.TaskManagement.SpringBoot.model.Role role) {
         if(userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("Email already exists");

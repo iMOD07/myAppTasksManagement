@@ -1,5 +1,4 @@
 package com.TaskManagement.SpringBoot.controller;
-
 import com.TaskManagement.SpringBoot.model.User;
 import com.TaskManagement.SpringBoot.model.Role;
 import com.TaskManagement.SpringBoot.dto.LoginRequest;
@@ -29,7 +28,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        User user = userService.registerUser(request.getFullName(), request.getEmail(), passwordEncoder.encode(request.getPassword()), request.getRole());
+        User user = userService.registerUser(
+                request.getFullName(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getRole());
+
         return ResponseEntity.ok("User registered successfully!");
     }
 
