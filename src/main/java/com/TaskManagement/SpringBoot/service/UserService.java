@@ -1,9 +1,12 @@
 package com.TaskManagement.SpringBoot.service;
 
+import com.TaskManagement.SpringBoot.model.Task;
 import com.TaskManagement.SpringBoot.model.User;
 import com.TaskManagement.SpringBoot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,4 +29,5 @@ public class UserService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
 }

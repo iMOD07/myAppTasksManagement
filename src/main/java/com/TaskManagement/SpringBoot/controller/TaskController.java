@@ -3,6 +3,7 @@ package com.TaskManagement.SpringBoot.controller;
 import com.TaskManagement.SpringBoot.model.Task;
 import com.TaskManagement.SpringBoot.dto.TaskRequest;
 import com.TaskManagement.SpringBoot.dto.TransferRequest;
+import com.TaskManagement.SpringBoot.model.User;
 import com.TaskManagement.SpringBoot.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +60,7 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTasksByUser(userId));
     }
 
-    // إنهاء مهمة – متاح فقط للعميل (CLIENT)
+    // إنهاء مهمة بواسطة العميل - Client فقط
     @PreAuthorize("hasRole('CLIENT')")
     @PutMapping("/complete/{taskId}")
     public ResponseEntity<Task> completeTask(@PathVariable Long taskId) {
@@ -67,13 +68,12 @@ public class TaskController {
         return ResponseEntity.ok(completedTask);
     }
 
-    // إنهاء مهمة – متاح فقط للعميل (ADMIN)
+    // (اختياري) إنهاء مهمة بواسطة المدير - Admin فقط (مسار مختلف)
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/complete/{taskId}")
+    @PutMapping("/admin/complete/{taskId}")
     public ResponseEntity<Task> completeTaskByAdmin(@PathVariable Long taskId) {
         Task completedTask = taskService.completeTask(taskId);
         return ResponseEntity.ok(completedTask);
     }
-
 
 }
