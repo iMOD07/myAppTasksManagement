@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tasks")
-@Getter @Setter
+@Getter
+@Setter
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +21,7 @@ public class Task {
     private String description;
 
     @Column(nullable = false)
-    private String status; // مثال: Pending, In Progress, Completed
+    private String status; // مثلاً: Pending, In Progress, Completed
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -30,5 +31,5 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "assigned_to", nullable = false)
-    private User assignedTo;
+    private UserEmployee assignedTo;
 }

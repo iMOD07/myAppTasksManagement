@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Autowired
-    private JwtFilter jwtFilter; // فلتر JWT الذي سننشئه
+    private JwtFilter jwtFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -25,10 +25,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/tasks/**").permitAll()  // السماح للـ auth endpoints بدون توثيق
-                        .anyRequest().authenticated()                  // باقي الطلبات تحتاج توثيق
+                        .requestMatchers("/api/auth/**", "/api/tasks/**").permitAll()  // السماح لنقاط الـ auth بدون توثيق، تأكد من سياسة الأمان حسب احتياجاتك
+                        .anyRequest().authenticated()
                 )
-
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

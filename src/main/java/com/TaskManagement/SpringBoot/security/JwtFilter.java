@@ -1,6 +1,6 @@
 package com.TaskManagement.SpringBoot.security;
 
-import com.TaskManagement.SpringBoot.repository.UserRepository;
+import com.TaskManagement.SpringBoot.repository.UserEmployeeRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +21,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserEmployeeRepository userEmployeeRepository; // تم تغيير الاسم إلى userEmployeeRepository
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -32,9 +32,8 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
             String email = jwtUtil.extractEmail(token);
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                var userOptional = userRepository.findByEmail(email);
+                var userOptional = userEmployeeRepository.findByEmail(email);
                 if (userOptional.isPresent() && jwtUtil.validateToken(token)) {
-                    // تعيين الصلاحية مع بادئة "ROLE_"
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                             userOptional.get(),
                             null,

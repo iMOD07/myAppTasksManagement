@@ -3,7 +3,6 @@ package com.TaskManagement.SpringBoot.controller;
 import com.TaskManagement.SpringBoot.model.Task;
 import com.TaskManagement.SpringBoot.dto.TaskRequest;
 import com.TaskManagement.SpringBoot.dto.TransferRequest;
-import com.TaskManagement.SpringBoot.model.User;
 import com.TaskManagement.SpringBoot.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -68,12 +67,11 @@ public class TaskController {
         return ResponseEntity.ok(completedTask);
     }
 
-    // (اختياري) إنهاء مهمة بواسطة المدير - Admin فقط (مسار مختلف)
+    // إنهاء مهمة بواسطة المدير - Admin فقط (مسار مختلف)
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/complete/{taskId}")
     public ResponseEntity<Task> completeTaskByAdmin(@PathVariable Long taskId) {
-        Task completedTask = taskService.completeTask(taskId);
+        Task completedTask = taskService.completeTask(taskId); // تم توحيد طريقة انهاء المهمة لاختلاف التسمية
         return ResponseEntity.ok(completedTask);
     }
-
 }

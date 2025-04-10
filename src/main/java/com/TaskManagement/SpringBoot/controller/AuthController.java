@@ -1,10 +1,13 @@
 package com.TaskManagement.SpringBoot.controller;
-import com.TaskManagement.SpringBoot.model.User;
-import com.TaskManagement.SpringBoot.model.Role;
-import com.TaskManagement.SpringBoot.dto.LoginRequest;
-import com.TaskManagement.SpringBoot.dto.RegisterRequest;
+
 import com.TaskManagement.SpringBoot.dto.AuthResponse;
-import com.TaskManagement.SpringBoot.service.UserService;
+import com.TaskManagement.SpringBoot.dto.ClientRegisterRequest;
+import com.TaskManagement.SpringBoot.dto.EmployeeRegisterRequest;
+import com.TaskManagement.SpringBoot.dto.LoginRequest;
+import com.TaskManagement.SpringBoot.model.UserEmployee;
+import com.TaskManagement.SpringBoot.model.UserClient;
+import com.TaskManagement.SpringBoot.service.UserEmployeeService;
+import com.TaskManagement.SpringBoot.service.UserClientService;
 import com.TaskManagement.SpringBoot.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,33 +21,68 @@ import java.util.Optional;
 public class AuthController {
 
     @Autowired
-    private UserService userService;
+    private UserEmployeeService employeeService;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private UserClientService clientService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        User user = userService.registerUser(
+    @Autowired
+    private JwtUtil jwtUtil; // تم إضافة حقن كائن JwtUtil
+
+    // تسجيل الموظف
+    @PostMapping("/register/employee")
+    public ResponseEntity<String> registerEmployee(@RequestBody EmployeeRegisterRequest request) {
+        UserEmployee employee = employeeService.registerEmployee(
                 request.getFullName(),
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
-                request.getRole());
-
-        return ResponseEntity.ok("User registered successfully!");
+                request.getMobileNumber(),
+                request.getDepartment(),
+                request.getJobTitle()
+        );
+        return ResponseEntity.ok("Employee registered successfully!");
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        Optional<User> userOptional = userService.findByEmail(request.getEmail());
-        if(userOptional.isEmpty() || !passwordEncoder.matches(request.getPassword(), userOptional.get().getPasswordHash())) {
+    // تسجيل العميل
+    @PostMapping("/register/client")
+    public ResponseEntity<String> registerClient(@RequestBody ClientRegisterRequest request) {
+        UserClient client = clientService.registerClient(
+                request.getFullName(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getMobileNumber(),
+                request.getCompanyName(),
+                request.getAddress()
+        );
+        return ResponseEntity.ok("Client registered successfully!");
+    }
+
+    // تسجيل دخول الموظف
+    @PostMapping("/login/employee")
+    public ResponseEntity<AuthResponse> loginEmployee(@RequestBody LoginRequest request) {
+        Optional<UserEmployee> employeeOptional = employeeService.findByEmail(request.getEmail());
+        if (employeeOptional.isEmpty() ||
+                !passwordEncoder.matches(request.getPassword(), employeeOptional.get().getPasswordHash())) {
             return ResponseEntity.status(401).body(new AuthResponse(null, null));
         }
-        User user = userOptional.get();
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
-        return ResponseEntity.ok(new AuthResponse(token, user.getRole().name()));
+        UserEmployee employee = employeeOptional.get();
+        String token = jwtUtil.generateToken(employee.getEmail(), employee.getRole().name());
+        return ResponseEntity.ok(new AuthResponse(token, employee.getRole().name()));
+    }
+
+    // تسجيل دخول العميل
+    @PostMapping("/login/client")
+    public ResponseEntity<AuthResponse> loginClient(@RequestBody LoginRequest request) {
+        Optional<UserClient> clientOptional = clientService.findByEmail(request.getEmail());
+        if (clientOptional.isEmpty() ||
+                !passwordEncoder.matches(request.getPassword(), clientOptional.get().getPasswordHash())) {
+            return ResponseEntity.status(401).body(new AuthResponse(null, null));
+        }
+        UserClient client = clientOptional.get();
+        String token = jwtUtil.generateToken(client.getEmail(), client.getRole().name());
+        return ResponseEntity.ok(new AuthResponse(token, client.getRole().name()));
     }
 }

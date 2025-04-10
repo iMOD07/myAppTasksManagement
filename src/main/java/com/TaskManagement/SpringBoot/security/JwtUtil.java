@@ -8,8 +8,8 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private static final String SECRET_KEY = "MySuperSecretKeyForJwtGeneration123456"; // استخدم مفتاحاً أقوى للإنتاج
-    private static final long EXPIRATION_TIME = 86400000; // يوم واحد (بالمللي ثانية)
+    private static final String SECRET_KEY = "MySuperSecretKeyForJwtGeneration123456"; // يجب استخدام مفتاح أقوى للإنتاج
+    private static final long EXPIRATION_TIME = 86400000; // يوم واحد بالمللي ثانية
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 

@@ -1,9 +1,9 @@
 package com.TaskManagement.SpringBoot.service;
 
 import com.TaskManagement.SpringBoot.model.Task;
-import com.TaskManagement.SpringBoot.model.User;
+import com.TaskManagement.SpringBoot.model.UserEmployee;
 import com.TaskManagement.SpringBoot.repository.TaskRepository;
-import com.TaskManagement.SpringBoot.repository.UserRepository;
+import com.TaskManagement.SpringBoot.repository.UserEmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -17,11 +17,11 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserEmployeeRepository userEmployeeRepository;
 
     // إنشاء مهمة جديدة (يستخدمها الـ Admin)
     public Task createTask(String title, String description, String status, Long assignedToId, LocalDateTime dueDate) {
-        Optional<User> user = userRepository.findById(assignedToId);
+        Optional<UserEmployee> user = userEmployeeRepository.findById(assignedToId);
         if (user.isEmpty()) {
             throw new RuntimeException("User not found!");
         }
@@ -72,7 +72,7 @@ public class TaskService {
         if (taskOptional.isEmpty()) {
             throw new RuntimeException("Task not found!");
         }
-        Optional<User> newUser = userRepository.findById(newAssignedToId);
+        Optional<UserEmployee> newUser = userEmployeeRepository.findById(newAssignedToId);
         if (newUser.isEmpty()) {
             throw new RuntimeException("Target user not found!");
         }
@@ -81,28 +81,14 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    // إنهاء مهمة (تحديث الحالة إلى "Completed") – يُستخدم من قبل العميل
+    // إنهاء مهمة بواسطة العميل أو المدير (تحديث الحالة إلى "Completed")
     public Task completeTask(Long taskId) {
         Optional<Task> taskOptional = taskRepository.findById(taskId);
         if (taskOptional.isEmpty()) {
             throw new RuntimeException("Task not found!");
         }
         Task task = taskOptional.get();
-        // تحديث حالة المهمة إلى Completed
         task.setStatus("Completed");
         return taskRepository.save(task);
     }
-
-    // إنهاء مهمة (تحديث الحالة إلى "Completed") – يُستخدم من قبل الادمن
-    public Task completeTaskByAdmin(Long taskID) {
-        Optional<Task> taskOptional = taskRepository.findById(taskID);
-        if (taskOptional.isEmpty()) {
-            throw new RuntimeException("Task not found");
-        }
-        Task task = taskOptional.get();
-        task.setStatus("Complete");
-        return taskRepository.save(task);
-    }
-
-
 }
