@@ -1,5 +1,6 @@
 package com.TaskManagement.SpringBoot.service;
 
+import com.TaskManagement.SpringBoot.model.Role;
 import com.TaskManagement.SpringBoot.model.UserEmployee;
 import com.TaskManagement.SpringBoot.repository.UserEmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,31 @@ public class UserEmployeeService {
         employee.setMobileNumber(mobileNumber);
         employee.setDepartment(department);
         employee.setJobTitle(jobTitle);
+        employee.setRole(Role.EMPLOYEE); // عند تسجيل الموظف، يتم تعيين دوره كـ EMPLOYEE
         return employeeRepository.save(employee);
     }
 
-    // الدالة الجديدة للبحث عن الموظف بواسطة البريد الإلكتروني
+    // دالة البحث عن الموظف بواسطة البريد الإلكتروني
     public Optional<UserEmployee> findByEmail(String email) {
         return employeeRepository.findByEmail(email);
+    }
+
+    public boolean existsById(Long employeeId) {
+        return employeeRepository.existsById(employeeId);
+    }
+
+    public boolean deleteEmployee(Long employeeId) {
+        return employeeRepository.existsById(employeeId);
+    }
+
+
+    public UserEmployee updateEmployeeRole(Long employeeId, Role newRole) {
+        Optional<UserEmployee> optionalEmployee = employeeRepository.findById(employeeId);
+        if (!optionalEmployee.isPresent()) {
+            throw new RuntimeException("Employee not found");
+        }
+        UserEmployee employee = optionalEmployee.get();
+        employee.setRole(newRole);
+        return employeeRepository.save(employee);
     }
 }

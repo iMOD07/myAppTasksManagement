@@ -25,7 +25,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/tasks/**").permitAll()  // السماح لنقاط الـ auth بدون توثيق، تأكد من سياسة الأمان حسب احتياجاتك
+                        // السماح بالوصول لنقاط النهاية الخاصة بالمصادقة وبعض نقاط النهاية الأخرى
+                        .requestMatchers("/api/auth/**", "/api/tasks/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

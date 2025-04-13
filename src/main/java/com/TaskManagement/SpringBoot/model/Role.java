@@ -3,5 +3,6 @@ package com.TaskManagement.SpringBoot.model;
 public enum Role {
     ADMIN,
     EMPLOYEE,
-    CLIENT
+    CLIENT,
+    SUPERVISOR
 }

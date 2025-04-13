@@ -21,4 +21,7 @@ public class EmployeeRegisterRequest {
 
     @JsonProperty("jobTitle")
     private String jobTitle;
+
+    @JsonProperty("role")
+    private String role;
 }

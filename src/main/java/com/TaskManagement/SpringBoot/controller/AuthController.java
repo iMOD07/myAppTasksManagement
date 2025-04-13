@@ -32,7 +32,7 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil; // تم إضافة حقن كائن JwtUtil
 
-    // تسجيل الموظف
+    // create Employee
     @PostMapping("/register/employee")
     public ResponseEntity<String> registerEmployee(@RequestBody EmployeeRegisterRequest request) {
         UserEmployee employee = employeeService.registerEmployee(
@@ -46,7 +46,7 @@ public class AuthController {
         return ResponseEntity.ok("Employee registered successfully!");
     }
 
-    // تسجيل العميل
+    // Create Client
     @PostMapping("/register/client")
     public ResponseEntity<String> registerClient(@RequestBody ClientRegisterRequest request) {
         UserClient client = clientService.registerClient(
@@ -60,7 +60,7 @@ public class AuthController {
         return ResponseEntity.ok("Client registered successfully!");
     }
 
-    // تسجيل دخول الموظف
+    // Log in Employee
     @PostMapping("/login/employee")
     public ResponseEntity<AuthResponse> loginEmployee(@RequestBody LoginRequest request) {
         Optional<UserEmployee> employeeOptional = employeeService.findByEmail(request.getEmail());
@@ -73,7 +73,7 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(token, employee.getRole().name()));
     }
 
-    // تسجيل دخول العميل
+    // Log in Client
     @PostMapping("/login/client")
     public ResponseEntity<AuthResponse> loginClient(@RequestBody LoginRequest request) {
         Optional<UserClient> clientOptional = clientService.findByEmail(request.getEmail());

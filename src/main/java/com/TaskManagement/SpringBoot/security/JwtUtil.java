@@ -3,15 +3,23 @@ package com.TaskManagement.SpringBoot.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
+
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private static final String SECRET_KEY = "MySuperSecretKeyForJwtGeneration123456"; // يجب استخدام مفتاح أقوى للإنتاج
-    private static final long EXPIRATION_TIME = 86400000; // يوم واحد بالمللي ثانية
 
-    private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    // يمكنك استخدام مفتاح ثابت إذا كنت متأكدًا من طوله،
+    // لكن لتجنب مشاكل المفتاح يمكنك تجربة المفتاح المولَّد تلقائيًا:
+    // private static final String SECRET_KEY = "MySuperSecretKeyForJwtGeneration123456";
+    // private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+
+    // استخدام مفتاح مولد تلقائيًا يضمن طولاً صحيحًا:
+    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+    private static final long EXPIRATION_TIME = 86400000; // يوم واحد بالمللي ثانية
 
     public String generateToken(String email, String role) {
         return Jwts.builder()
@@ -25,7 +33,9 @@ public class JwtUtil {
 
     public String extractEmail(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token).getBody().getSubject();
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public boolean validateToken(String token) {
