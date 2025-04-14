@@ -4,23 +4,25 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    // يمكنك استخدام مفتاح ثابت إذا كنت متأكدًا من طوله،
-    // لكن لتجنب مشاكل المفتاح يمكنك تجربة المفتاح المولَّد تلقائيًا:
-    // private static final String SECRET_KEY = "MySuperSecretKeyForJwtGeneration123456";
-    // private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    // مدة صلاحية التوكن (يوم واحد بالمللي ثانية)
+    private static final long EXPIRATION_TIME = 86400000;
 
-    // استخدام مفتاح مولد تلقائيًا يضمن طولاً صحيحًا:
+    // توليد مفتاح صالح بشكل تلقائي باستخدام خوارزمية HS256
+    // هذا يضمن أن المفتاح له الطول والصيغة المطلوبة لتوقيع التوكن
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    private static final long EXPIRATION_TIME = 86400000; // يوم واحد بالمللي ثانية
-
+    /**
+     * توليد توكن JWT باستخدام البريد الإلكتروني والدور.
+     * @param email بريد المستخدم
+     * @param role  دور المستخدم
+     * @return توكن JWT موقّع
+     */
     public String generateToken(String email, String role) {
         return Jwts.builder()
                 .setSubject(email)
@@ -31,18 +33,31 @@ public class JwtUtil {
                 .compact();
     }
 
+    /**
+     * استخراج البريد الإلكتروني من التوكن.
+     * @param token توكن JWT
+     * @return البريد الإلكتروني للمستخدم الموجود في التوكن
+     */
     public String extractEmail(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
+    /**
+     * التحقق من صلاحية التوكن.
+     * @param token توكن JWT
+     * @return true إذا كان التوكن صالحًا، وإلا false
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (JwtException e) {
+        } catch (JwtException ex) {
+            // يمكن هنا تسجيل الخطأ لمزيد من التحليل عند الحاجة
             return false;
         }
     }

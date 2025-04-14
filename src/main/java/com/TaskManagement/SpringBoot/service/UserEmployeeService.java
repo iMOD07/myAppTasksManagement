@@ -47,8 +47,14 @@ public class UserEmployeeService {
         return employeeRepository.existsById(employeeId);
     }
 
-    public boolean deleteEmployee(Long employeeId) {
-        return employeeRepository.existsById(employeeId);
+
+    public void deleteEmployee(Long employeeId) {
+        // check the employees first .
+        if(employeeRepository.existsById(employeeId)) {
+            employeeRepository.deleteById(employeeId);
+        } else {
+            throw new RuntimeException("Employee not found");
+        }
     }
 
 

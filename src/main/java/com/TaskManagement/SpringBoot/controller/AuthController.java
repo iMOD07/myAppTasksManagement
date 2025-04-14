@@ -61,6 +61,7 @@ public class AuthController {
     }
 
     // Log in Employee
+
     @PostMapping("/login/employee")
     public ResponseEntity<AuthResponse> loginEmployee(@RequestBody LoginRequest request) {
         Optional<UserEmployee> employeeOptional = employeeService.findByEmail(request.getEmail());
@@ -85,4 +86,5 @@ public class AuthController {
         String token = jwtUtil.generateToken(client.getEmail(), client.getRole().name());
         return ResponseEntity.ok(new AuthResponse(token, client.getRole().name()));
     }
+
 }

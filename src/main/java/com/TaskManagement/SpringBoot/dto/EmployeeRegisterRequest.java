@@ -14,6 +14,7 @@ public class EmployeeRegisterRequest {
     private String email;
 
     private String password;
+
     private String mobileNumber;
 
     @JsonProperty("department")
