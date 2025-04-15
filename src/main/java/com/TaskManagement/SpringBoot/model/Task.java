@@ -32,4 +32,10 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "assigned_to", nullable = false)
     private UserEmployee assignedTo;
+
+
+    @OneToOne
+    @JoinColumn(name = "connect_to", nullable = false)
+    private UserClient connect_to;
+
 }

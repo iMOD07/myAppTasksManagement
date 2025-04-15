@@ -1,6 +1,5 @@
 package com.TaskManagement.SpringBoot.service;
 
-import com.TaskManagement.SpringBoot.model.Role;
 import com.TaskManagement.SpringBoot.model.UserClient;
 import com.TaskManagement.SpringBoot.repository.UserClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,7 @@ public class UserClientService {
     @Autowired
     private UserClientRepository clientRepository;
 
-
-
+    // دالة لتسجيل العميل كما هو موجود
     public UserClient registerClient(String fullName,
                                      String email,
                                      String passwordHash,
@@ -24,11 +22,9 @@ public class UserClientService {
         if (clientRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
-
         if (clientRepository.findByMobileNumber(mobileNumber).isPresent()) {
             throw new RuntimeException("Mobile Number already exists");
         }
-
         UserClient client = new UserClient();
         client.setFullName(fullName);
         client.setEmail(email);
@@ -36,23 +32,24 @@ public class UserClientService {
         client.setMobileNumber(mobileNumber);
         client.setCompanyName(companyName);
         client.setAddress(address);
+        client.setRole(com.TaskManagement.SpringBoot.model.Role.CLIENT);
         return clientRepository.save(client);
     }
 
-
-    // الدالة الجديدة للبحث عن العميل بواسطة البريد الإلكتروني
+    // أضف هذه الدالة لحل المشكلة
     public Optional<UserClient> findByEmail(String email) {
         return clientRepository.findByEmail(email);
     }
 
-
-    public void deleteUserClient(Long clientId) {
-        // check the Client first .
-        if(clientRepository.existsById(clientId)) {
-            clientRepository.existsById(clientId);
-        } else {
-            throw new RuntimeException("clientId not found");
-        }
+    public boolean existsById(Long clientId) {
+        return clientRepository.existsById(clientId);
     }
 
+    // not running why ? i don't know
+    public void deleteClient(Long clientId) {
+        if (!clientRepository.existsById(clientId)) {
+            throw new RuntimeException("Client not found");
+        }
+        clientRepository.deleteById(clientId);
+    }
 }

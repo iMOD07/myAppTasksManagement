@@ -12,4 +12,6 @@ public class TaskRequest {
     private String status;
     private Long assignedToId;
     private LocalDateTime dueDate;
+    private Long connect_to;
+
 }

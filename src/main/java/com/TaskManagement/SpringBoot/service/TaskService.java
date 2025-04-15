@@ -1,8 +1,10 @@
 package com.TaskManagement.SpringBoot.service;
 
 import com.TaskManagement.SpringBoot.model.Task;
+import com.TaskManagement.SpringBoot.model.UserClient;
 import com.TaskManagement.SpringBoot.model.UserEmployee;
 import com.TaskManagement.SpringBoot.repository.TaskRepository;
+import com.TaskManagement.SpringBoot.repository.UserClientRepository;
 import com.TaskManagement.SpringBoot.repository.UserEmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,18 +21,33 @@ public class TaskService {
     @Autowired
     private UserEmployeeRepository userEmployeeRepository;
 
+    @Autowired
+    private UserClientRepository userClientRepository;
+
     // إنشاء مهمة جديدة (يستخدمها الـ Admin)
-    public Task createTask(String title, String description, String status, Long assignedToId, LocalDateTime dueDate) {
+    public Task createTask(String title,
+                           String description,
+                           String status,
+                           Long assignedToId,
+                           LocalDateTime dueDate,
+                           Long connect_to) {
         Optional<UserEmployee> user = userEmployeeRepository.findById(assignedToId);
+        Optional<UserClient> userClient = userClientRepository.findById(connect_to);
+
         if (user.isEmpty()) {
             throw new RuntimeException("User not found!");
         }
+        if (userClient.isEmpty()) {
+            throw new RuntimeException("Client not found!");
+        }
+
         Task task = new Task();
         task.setTitle(title);
         task.setDescription(description);
         task.setStatus(status);
         task.setAssignedTo(user.get());
         task.setDueDate(dueDate);
+        task.setConnect_to(userClient.get());
         return taskRepository.save(task);
     }
 

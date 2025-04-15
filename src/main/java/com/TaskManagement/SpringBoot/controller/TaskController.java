@@ -26,7 +26,8 @@ public class TaskController {
                 request.getDescription(),
                 request.getStatus(),
                 request.getAssignedToId(),
-                request.getDueDate()
+                request.getDueDate(),
+                request.getConnect_to()
         );
         return ResponseEntity.ok(task);
     }
