@@ -17,11 +17,13 @@ public class EmployeeController {
     @Autowired
     private UserEmployeeService employeeService; // تعريف المتغير هنا
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{employeeId}")
     public ResponseEntity<String> deleteUserEmployee(@PathVariable Long employeeId) {
+        if (!employeeService.existsById(employeeId)) {
+            return ResponseEntity.ok("User not Found");
+        }
         employeeService.deleteEmployee(employeeId);
-        return ResponseEntity.ok("Employee delete successfully");
+        return ResponseEntity.ok("Employee deleted successfully");
     }
 
     @PreAuthorize("hasRole('ADMIN')")

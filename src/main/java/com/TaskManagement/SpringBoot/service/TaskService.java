@@ -51,22 +51,34 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    // جلب جميع المهام
+    // Get All Tasks
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+        List<Task> tasks = taskRepository.findAll();
+        if (tasks.isEmpty()) {
+            throw new RuntimeException("No tasks");
+        }
+        return tasks;
     }
 
-    // جلب المهام الخاصة بمستخدم معين
+
+    // Get Tasks By User
     public List<Task> getTasksByUser(Long userId) {
         return taskRepository.findByAssignedToId(userId);
     }
 
-    // تحديث مهمة موجودة (يستخدمها الـ Admin)
-    public Task updateTask(Long taskId, String title, String description, String status, LocalDateTime dueDate) {
+
+    // Update tasks in use (role admin only)
+    public Task updateTask(Long taskId,
+                           String title,
+                           String description,
+                           String status,
+                           LocalDateTime dueDate) {
         Optional<Task> taskOptional = taskRepository.findById(taskId);
+
         if (taskOptional.isEmpty()) {
             throw new RuntimeException("Task not found!");
         }
+
         Task task = taskOptional.get();
         task.setTitle(title);
         task.setDescription(description);
@@ -75,7 +87,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    // حذف مهمة (يستخدمها الـ Admin)
+    // Delete task (used by Admin)
     public void deleteTask(Long taskId) {
         if (!taskRepository.existsById(taskId)) {
             throw new RuntimeException("Task not found!");
@@ -98,7 +110,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    // إنهاء مهمة بواسطة العميل أو المدير (تحديث الحالة إلى "Completed")
+    // End Tasks by ADMIN or CLIENT (State to Completed)
     public Task completeTask(Long taskId) {
         Optional<Task> taskOptional = taskRepository.findById(taskId);
         if (taskOptional.isEmpty()) {

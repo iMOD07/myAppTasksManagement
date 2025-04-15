@@ -17,7 +17,7 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    // إنشاء مهمة - Admin فقط
+    // create tasks by ADMIN
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<Task> createTask(@RequestBody TaskRequest request) {
@@ -39,6 +39,21 @@ public class TaskController {
         taskService.deleteTask(taskId);
         return ResponseEntity.ok("Task deleted successfully");
     }
+
+    // نقطة نهاية لتحديث مهمة (يستخدمها المسؤول فقط)
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/update/{taskId}")
+    public ResponseEntity<Task> updateTask(@PathVariable Long taskId, @RequestBody TaskRequest request) {
+        Task updatedTask = taskService.updateTask(
+                taskId,
+                request.getTitle(),
+                request.getDescription(),
+                request.getStatus(),
+                request.getDueDate()
+        );
+        return ResponseEntity.ok(updatedTask);
+    }
+
 
     // تحويل مهمة لموظف آخر - Employee فقط
     @PreAuthorize("hasRole('EMPLOYEE')")
