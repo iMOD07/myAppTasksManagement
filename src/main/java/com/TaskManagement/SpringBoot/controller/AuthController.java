@@ -30,7 +30,7 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private JwtUtil jwtUtil; // تم إضافة حقن كائن JwtUtil
+    private JwtUtil jwtUtil;
 
     // create Employee
     @PostMapping("/register/employee")
